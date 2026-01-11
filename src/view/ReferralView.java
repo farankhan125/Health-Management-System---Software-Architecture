@@ -47,10 +47,11 @@ public class ReferralView extends JPanel {
                 }, 0
         );
         table = new JTable(model);
-        table.setRowHeight(18);
-        JPanel formPanel = new JPanel();
-        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        formPanel.setLayout(new GridLayout(0, 4, 20, 10));
+        table.setRowHeight(22);
+        JPanel formContainer = new JPanel(new GridBagLayout());
+        GridBagConstraints gc = new GridBagConstraints();
+        gc.insets = new Insets(10, 15, 10, 15);
+        gc.fill = GridBagConstraints.HORIZONTAL;
         txtId = createField();
         txtReason = createField();
         txtRequestedService = createField();
@@ -83,10 +84,6 @@ public class ReferralView extends JPanel {
         txtReferralDate = createDateField();
         txtClinicalSummary = createArea();
         txtNotes = createArea();
-        JPanel formContainer = new JPanel(new GridBagLayout());
-        GridBagConstraints gc = new GridBagConstraints();
-        gc.insets = new Insets(10, 15, 10, 15);
-        gc.fill = GridBagConstraints.HORIZONTAL;
         int row = 0;
         add4(formContainer, gc, row++, "Referral ID:", txtId, "Patient ID:", cbPatientId);
         add4(formContainer, gc, row++, "Referring Clinician ID:", cbRefClin, "Referred-To Clinician ID:", cbToClin);
@@ -101,7 +98,6 @@ public class ReferralView extends JPanel {
         splitPane.setResizeWeight(0.55);
         add(splitPane, BorderLayout.CENTER);
         JButton btnAdd = new JButton("Create Referral");
-        btnAdd.setPreferredSize(new Dimension(160, 30));
         btnAdd.addActionListener(e -> onAdd());
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonPanel.add(btnAdd);

@@ -39,7 +39,6 @@ public class ClinicianView extends JPanel {
         txtLastName = new JTextField();
         txtSpeciality = new JTextField();
         txtGmc = new JTextField();
-        ((AbstractDocument) txtGmc.getDocument()).setDocumentFilter(new DigitsOnlyFilter());
         txtPhone = new JTextField();
         ((AbstractDocument) txtPhone.getDocument()).setDocumentFilter(new DigitsOnlyFilter());
         txtEmail = new JTextField();
@@ -59,7 +58,7 @@ public class ClinicianView extends JPanel {
         int row = 0;
         add4(form, gc, row++, "Clinician ID:", lblId,    "Title:", cmbTitle);
         add4(form, gc, row++, "First Name:", txtFirstName, "Last Name:", txtLastName);
-        add4(form, gc, row++, "Speciality:", txtSpeciality, "GMC Number:", txtGmc);
+        add4(form, gc, row++, "Speciality:", txtSpeciality, "GMC:", txtGmc);
         add4(form, gc, row++, "Phone Number:", txtPhone, "Email:", txtEmail);
         add4(form, gc, row++, "Workplace ID:", txtWorkplaceId, "Workplace Type:", cmbWorkplaceType);
         add4(form, gc, row++, "Employment:", cmbEmployment, "Start Date (YYYY-MM-DD):", txtStartDate);
@@ -71,7 +70,7 @@ public class ClinicianView extends JPanel {
         JButton btnDelete = new JButton("Delete Selected");
         btnAdd.addActionListener(e -> onAdd());
         btnDelete.addActionListener(e -> onDelete());
-        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 10));
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttons.add(btnAdd);
         buttons.add(btnDelete);
         add(buttons, BorderLayout.NORTH);

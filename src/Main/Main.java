@@ -6,7 +6,7 @@ import javax.swing.SwingUtilities;
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-                        System.out.println("Starting HMS GUI...");
+                        System.out.println("Health Managegment System Starting...");
                         try {
             PatientRepository pr =
                     new PatientRepository("src/data/patients.csv");

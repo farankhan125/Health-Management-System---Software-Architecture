@@ -83,7 +83,7 @@ public class PatientView extends JPanel {
         JButton btnDelete = new JButton("Delete Selected");
         btnAdd.addActionListener(e -> onAdd());
         btnDelete.addActionListener(e -> onDelete());
-        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 10));
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttons.add(btnAdd);
         buttons.add(btnDelete);
         add(buttons, BorderLayout.NORTH);

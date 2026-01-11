@@ -61,9 +61,8 @@ public class PrescriptionView extends JPanel {
         table.setRowHeight(22);
         JPanel form = new JPanel(new GridBagLayout());
         GridBagConstraints gc = new GridBagConstraints();
-        gc.insets = new Insets(6, 8, 6, 8);
+        gc.insets = new Insets(10, 15, 10, 15);
         gc.fill = GridBagConstraints.HORIZONTAL;
-        gc.weightx = 0.5;
         lblId = new JLabel("RX001");
         cbPatientId    = new JComboBox<>();
         cbClinicianId  = new JComboBox<>();
@@ -156,12 +155,16 @@ public class PrescriptionView extends JPanel {
                          String label2, JComponent field2) {
         gc.gridy = row;
         gc.gridx = 0;
+        gc.weightx = 0.15;
         panel.add(new JLabel(label1), gc);
         gc.gridx = 1;
+        gc.weightx = 0.35;
         panel.add(field1, gc);
         gc.gridx = 2;
+        gc.weightx = 0.15;
         panel.add(new JLabel(label2), gc);
         gc.gridx = 3;
+        gc.weightx = 0.35;
         panel.add(field2, gc);
     }
     public void setController(PrescriptionController controller) {

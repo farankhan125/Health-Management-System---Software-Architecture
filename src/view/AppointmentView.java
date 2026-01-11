@@ -38,7 +38,7 @@ public class AppointmentView extends JPanel {
         JPanel form = new JPanel(new GridBagLayout());
         form.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         GridBagConstraints gc = new GridBagConstraints();
-        gc.insets = new Insets(6, 6, 6, 6);
+        gc.insets = new Insets(10, 15, 10, 15);
         gc.fill = GridBagConstraints.HORIZONTAL;
         lblId = new JLabel();
         cbPatientId = new JComboBox<>();
@@ -138,12 +138,16 @@ public class AppointmentView extends JPanel {
                               String l2, JComponent f2) {
         gc.gridwidth = 1;
         gc.gridx = 0; gc.gridy = row;
+        gc.weightx = 0.15;
         panel.add(new JLabel(l1), gc);
         gc.gridx = 1;
+        gc.weightx = 0.35;
         panel.add(f1, gc);
         gc.gridx = 2;
+        gc.weightx = 0.15;
         panel.add(new JLabel(l2), gc);
         gc.gridx = 3;
+        gc.weightx = 0.35;
         panel.add(f2, gc);
     }
     public void loadDropdowns(List<String> patients, List<String> clinicians, List<String> facilities) {
