@@ -18,6 +18,7 @@ public class ClinicianView extends JPanel {
     private JTextField txtPhone;
     private JComboBox<String> cmbTitle, cmbWorkplaceType, cmbEmployment;
     private JFormattedTextField txtStartDate;
+    private JButton btnAdd, btnUpdate;
     public ClinicianView() {
         setLayout(new BorderLayout(15, 15));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -27,7 +28,12 @@ public class ClinicianView extends JPanel {
                         "Phone","Email","Workplace ID","Workplace Type",
                         "Employment","Start Date"
                 }, 0
-        );
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
+        };
         table = new JTable(model);
         table.setRowHeight(22);
         JPanel form = new JPanel(new GridBagLayout());
@@ -66,14 +72,46 @@ public class ClinicianView extends JPanel {
         splitPane.setDividerLocation(0.55);
         splitPane.setResizeWeight(0.55);
         add(splitPane, BorderLayout.CENTER);
-        JButton btnAdd = new JButton("Add Clinician");
+        form.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (table.getSelectedRow() >= 0) {
+                    table.clearSelection();
+                }
+            }
+        });
+        btnAdd = new JButton("Add Clinician");
+        btnUpdate = new JButton("Update Selected");
         JButton btnDelete = new JButton("Delete Selected");
         btnAdd.addActionListener(e -> onAdd());
+        btnUpdate.addActionListener(e -> onUpdate());
         btnDelete.addActionListener(e -> onDelete());
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttons.add(btnAdd);
+        buttons.add(btnUpdate);
         buttons.add(btnDelete);
         add(buttons, BorderLayout.NORTH);
+        btnUpdate.setVisible(false);
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                loadSelectedRowIntoForm();
+                boolean hasSelection = table.getSelectedRow() >= 0;
+                btnAdd.setVisible(!hasSelection);
+                btnUpdate.setVisible(hasSelection);
+            }
+        });
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                if (row < 0) {
+                    table.clearSelection();
+                    clearClinicianForm();
+                    btnAdd.setVisible(true);
+                    btnUpdate.setVisible(false);
+                }
+            }
+        });
     }
     private void add4(JPanel panel, GridBagConstraints gc, int row,
                       String label1, JComponent field1,
@@ -127,6 +165,27 @@ public class ClinicianView extends JPanel {
         );
         controller.addClinician(c);
     }
+    private void onUpdate() {
+        String startDate = txtStartDate.getText().trim().isEmpty() ? "" : txtStartDate.getText().trim();
+        Clinician c = new Clinician(
+                lblId.getText(),
+                (String) cmbTitle.getSelectedItem(),
+                txtFirstName.getText(),
+                txtLastName.getText(),
+                txtSpeciality.getText(),
+                txtGmc.getText(),
+                txtPhone.getText(),
+                txtEmail.getText(),
+                txtWorkplaceId.getText(),
+                (String) cmbWorkplaceType.getSelectedItem(),
+                (String) cmbEmployment.getSelectedItem(),
+                startDate
+        );
+        controller.updateClinician(c);
+        clearClinicianForm();
+        btnAdd.setVisible(true);
+        btnUpdate.setVisible(false);
+    }
     private static class DigitsOnlyFilter extends DocumentFilter {
         @Override
         public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
@@ -171,5 +230,42 @@ public class ClinicianView extends JPanel {
         }
         String id = (String) model.getValueAt(row, 0);
         controller.deleteById(id);
+    }
+    private void loadSelectedRowIntoForm() {
+        int row = table.getSelectedRow();
+        if (row < 0) {
+            clearClinicianForm();
+            return;
+        }
+        lblId.setText(val(row, 0));
+        cmbTitle.setSelectedItem(val(row, 1));
+        txtFirstName.setText(val(row, 2));
+        txtLastName.setText(val(row, 3));
+        txtSpeciality.setText(val(row, 4));
+        txtGmc.setText(val(row, 5));
+        txtPhone.setText(val(row, 6));
+        txtEmail.setText(val(row, 7));
+        txtWorkplaceId.setText(val(row, 8));
+        cmbWorkplaceType.setSelectedItem(val(row, 9));
+        cmbEmployment.setSelectedItem(val(row, 10));
+        txtStartDate.setText(val(row, 11));
+    }
+    private void clearClinicianForm() {
+        lblId.setText("C001");
+        cmbTitle.setSelectedIndex(0);
+        txtFirstName.setText("");
+        txtLastName.setText("");
+        txtSpeciality.setText("");
+        txtGmc.setText("");
+        txtPhone.setText("");
+        txtEmail.setText("");
+        txtWorkplaceId.setText("");
+        cmbWorkplaceType.setSelectedIndex(0);
+        cmbEmployment.setSelectedIndex(0);
+        txtStartDate.setText("");
+    }
+    private String val(int row, int col) {
+        Object v = model.getValueAt(row, col);
+        return v == null ? "" : v.toString();
     }
 }

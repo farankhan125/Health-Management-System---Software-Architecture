@@ -19,3 +19,25 @@ Created Date: 23/11/2025
 Last Updated: 23/11/2025
 ----------------------------------------------
 
+==============================================
+            REFERRAL SUMMARY REPORT           
+==============================================
+Referral ID: R001
+Patient: Michael Davis (NHS: 5678901234)
+Referring Clinician: GP Thompson GP (GP - General Practice)
+Referred To: Dr. Richard Evans Consultant (Dr. Richard - Cardiology)
+Referring Facility: Birmingham Central GP Surgery (GP Surgery)
+Referred To Facility: Heartlands Hospital (Hospital)
+Referral Date: 2025-09-10
+Urgency Level: Routine
+Reason for Referral: Heart murmur investigation
+Requested Service: Echocardiogram|ECG
+Status: Completed
+Clinical Summary:
+35-year-old male with Grade 2/6 systolic murmur detected during routine examination. No symptoms of chest pain or breathlessness.
+Notes:
+Patient seen, echo normal yeah
+Created Date: 2025-09-10
+Last Updated: 2026-01-13
+----------------------------------------------
+

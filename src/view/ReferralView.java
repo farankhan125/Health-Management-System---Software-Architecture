@@ -22,6 +22,7 @@ public class ReferralView extends JPanel {
     private JComboBox<String> cbUrgency;
     private JComboBox<String> cbAppointmentId;
     private JComboBox<String> cbStatus;     
+        private JButton btnAdd, btnUpdate;
         private final DateTimeFormatter localDateFormatter =
             DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public ReferralView() {
@@ -45,7 +46,12 @@ public class ReferralView extends JPanel {
                         "Created (YYYY-MM-DD)",
                         "Updated (YYYY-MM-DD)"
                 }, 0
-        );
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
+        };
         table = new JTable(model);
         table.setRowHeight(22);
         JPanel formContainer = new JPanel(new GridBagLayout());
@@ -97,11 +103,43 @@ public class ReferralView extends JPanel {
         splitPane.setDividerLocation(0.55);
         splitPane.setResizeWeight(0.55);
         add(splitPane, BorderLayout.CENTER);
-        JButton btnAdd = new JButton("Create Referral");
+        formContainer.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (table.getSelectedRow() >= 0) {
+                    table.clearSelection();
+                }
+            }
+        });
+        btnAdd = new JButton("Create Referral");
+        btnUpdate = new JButton("Update Selected");
         btnAdd.addActionListener(e -> onAdd());
+        btnUpdate.addActionListener(e -> onUpdate());
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonPanel.add(btnAdd);
+        buttonPanel.add(btnUpdate);
         add(buttonPanel, BorderLayout.NORTH);
+        btnUpdate.setVisible(false);
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                loadSelectedRowIntoForm();
+                boolean hasSelection = table.getSelectedRow() >= 0;
+                btnAdd.setVisible(!hasSelection);
+                btnUpdate.setVisible(hasSelection);
+            }
+        });
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                if (row < 0) {
+                    table.clearSelection();
+                    clearReferralForm();
+                    btnAdd.setVisible(true);
+                    btnUpdate.setVisible(false);
+                }
+            }
+        });
     }
     private JTextField createField() {
         return new JTextField();
@@ -273,6 +311,40 @@ public class ReferralView extends JPanel {
         refreshDates();
         clearFormButKeepIds();
     }
+    private void onUpdate() {
+        String errors = validateForm();
+        if (!errors.isEmpty()) {
+            JOptionPane.showMessageDialog(this, errors,
+                    "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String now = LocalDate.now().format(localDateFormatter);
+        txtLastUpdated.setText(now);
+        Referral r = new Referral(
+            txtId.getText().trim(),
+            (String) cbPatientId.getSelectedItem(),
+            (String) cbRefClin.getSelectedItem(),
+            (String) cbToClin.getSelectedItem(),
+            (String) cbRefFacility.getSelectedItem(),
+            (String) cbToFacility.getSelectedItem(),
+            txtReferralDate.getText().trim(),
+            (String) cbUrgency.getSelectedItem(),
+            txtReason.getText().trim(),
+            txtClinicalSummary.getText().trim(),
+            txtRequestedService.getText().trim(),
+            (String) cbStatus.getSelectedItem(),
+            (String) cbAppointmentId.getSelectedItem(),
+            txtNotes.getText().trim(),
+            txtCreatedDate.getText().trim(),
+            txtLastUpdated.getText().trim()
+        );
+        controller.updateReferral(r);
+        JOptionPane.showMessageDialog(this,
+                "Referral " + r.getId() + " updated successfully.");
+        clearReferralForm();
+        btnAdd.setVisible(true);
+        btnUpdate.setVisible(false);
+    }
     private String validateForm() {
         StringBuilder sb = new StringBuilder();
         if (cbPatientId.getSelectedItem() == null)
@@ -298,5 +370,49 @@ public class ReferralView extends JPanel {
         txtClinicalSummary.setText("");
         txtRequestedService.setText("");
         txtNotes.setText("");
+    }
+    private void loadSelectedRowIntoForm() {
+        int row = table.getSelectedRow();
+        if (row < 0) {
+            clearReferralForm();
+            return;
+        }
+        txtId.setText(val(row, 0));
+        cbPatientId.setSelectedItem(val(row, 1));
+        cbRefClin.setSelectedItem(val(row, 2));
+        cbToClin.setSelectedItem(val(row, 3));
+        cbRefFacility.setSelectedItem(val(row, 4));
+        cbToFacility.setSelectedItem(val(row, 5));
+        txtReferralDate.setText(val(row, 6));
+        cbUrgency.setSelectedItem(val(row, 7));
+        txtReason.setText(val(row, 8));
+        txtClinicalSummary.setText(val(row, 9));
+        txtRequestedService.setText(val(row, 10));
+        cbStatus.setSelectedItem(val(row, 11));
+        cbAppointmentId.setSelectedItem(val(row, 12));
+        txtNotes.setText(val(row, 13));
+        txtCreatedDate.setText(val(row, 14));
+        txtLastUpdated.setText(val(row, 15));
+    }
+    private void clearReferralForm() {
+        refreshAutoId();
+        cbPatientId.setSelectedIndex(0);
+        cbRefClin.setSelectedIndex(0);
+        cbToClin.setSelectedIndex(0);
+        cbRefFacility.setSelectedIndex(0);
+        cbToFacility.setSelectedIndex(0);
+        txtReferralDate.setText("");
+        cbUrgency.setSelectedIndex(0);
+        txtReason.setText("");
+        txtClinicalSummary.setText("");
+        txtRequestedService.setText("");
+        cbStatus.setSelectedIndex(0);
+        cbAppointmentId.setSelectedIndex(0);
+        txtNotes.setText("");
+        refreshDates();
+    }
+    private String val(int row, int col) {
+        Object v = model.getValueAt(row, col);
+        return v == null ? "" : v.toString();
     }
 }

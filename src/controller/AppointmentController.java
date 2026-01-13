@@ -47,6 +47,11 @@ public class AppointmentController {
         repo.addAndAppend(a);
         refreshAppointments();
     }
+    public void updateAppointment(Appointment a) {
+        repo.remove(repo.findById(a.getId()));
+        repo.addAndAppend(a);
+        refreshAppointments();
+    }
     public void deleteById(String id) {
         Appointment a = repo.findById(id);
         if (a != null) repo.remove(a);

@@ -23,6 +23,11 @@ public class PatientController {
         repository.addAndAppend(p);
         refreshView();
     }
+    public void updatePatient(Patient p) {
+        repository.remove(repository.findById(p.getId()));
+        repository.addAndAppend(p);
+        refreshView();
+    }
     public void deletePatient(Patient p) {
         repository.remove(p);
         refreshView();

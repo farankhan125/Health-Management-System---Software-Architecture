@@ -23,6 +23,7 @@ public class AppointmentView extends JPanel {
     private JComboBox<String> cbClinicianId;
     private JComboBox<String> cbFacilityId;
     private JTextArea txtNotes;
+    private JButton btnAdd, btnUpdate;
     private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     public AppointmentView() {
         setLayout(new BorderLayout(10, 10));
@@ -32,7 +33,12 @@ public class AppointmentView extends JPanel {
                         "Date", "Time", "Duration (min)", "Type",
                         "Status", "Reason", "Notes", "Created", "Last Modified"
                 }, 0
-        );
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
+        };
         table = new JTable(model);
         table.setRowHeight(22);
         JPanel form = new JPanel(new GridBagLayout());
@@ -100,14 +106,46 @@ public class AppointmentView extends JPanel {
         splitPane.setDividerLocation(0.55);
         splitPane.setResizeWeight(0.55);
         add(splitPane, BorderLayout.CENTER);
-        JButton btnAdd = new JButton("Add Appointment");
+        form.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (table.getSelectedRow() >= 0) {
+                    table.clearSelection();
+                }
+            }
+        });
+        btnAdd = new JButton("Add Appointment");
+        btnUpdate = new JButton("Update Selected");
         JButton btnDelete = new JButton("Delete Selected");
         btnAdd.addActionListener(e -> addAppointment());
+        btnUpdate.addActionListener(e -> updateAppointment());
         btnDelete.addActionListener(e -> deleteAppointment());
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttons.add(btnAdd);
+        buttons.add(btnUpdate);
         buttons.add(btnDelete);
         add(buttons, BorderLayout.NORTH);
+        btnUpdate.setVisible(false);
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                loadSelectedRowIntoForm();
+                boolean hasSelection = table.getSelectedRow() >= 0;
+                btnAdd.setVisible(!hasSelection);
+                btnUpdate.setVisible(hasSelection);
+            }
+        });
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                if (row < 0) {
+                    table.clearSelection();
+                    clearAppointmentForm();
+                    btnAdd.setVisible(true);
+                    btnUpdate.setVisible(false);
+                }
+            }
+        });
     }
     private static class LimitedDigitsFilter extends DocumentFilter {
         private final int maxLen;
@@ -204,6 +242,66 @@ public class AppointmentView extends JPanel {
         );
         controller.addAppointment(a);
         lblId.setText(controller.generateId());
+    }
+    private void updateAppointment() {
+        Appointment a = new Appointment(
+                lblId.getText(),
+                (String) cbPatientId.getSelectedItem(),
+                (String) cbClinicianId.getSelectedItem(),
+                (String) cbFacilityId.getSelectedItem(),
+                txtDate.getText(),
+                txtTime.getText(),
+                txtDuration.getText(),
+                txtType.getText(),
+                (String) cbStatus.getSelectedItem(),
+                txtReason.getText(),
+                txtNotes.getText(),
+                txtCreatedDate.getText(),
+                txtLastModified.getText()
+        );
+        controller.updateAppointment(a);
+        clearAppointmentForm();
+        btnAdd.setVisible(true);
+        btnUpdate.setVisible(false);
+    }
+    private void loadSelectedRowIntoForm() {
+        int row = table.getSelectedRow();
+        if (row < 0) {
+            clearAppointmentForm();
+            return;
+        }
+        lblId.setText(val(row, 0));
+        cbPatientId.setSelectedItem(val(row, 1));
+        cbClinicianId.setSelectedItem(val(row, 2));
+        cbFacilityId.setSelectedItem(val(row, 3));
+        txtDate.setText(val(row, 4));
+        txtTime.setText(val(row, 5));
+        txtDuration.setText(val(row, 6));
+        txtType.setText(val(row, 7));
+        cbStatus.setSelectedItem(val(row, 8));
+        txtReason.setText(val(row, 9));
+        txtNotes.setText(val(row, 10));
+        txtCreatedDate.setText(val(row, 11));
+        txtLastModified.setText(val(row, 12));
+    }
+    private void clearAppointmentForm() {
+        lblId.setText("");
+        cbPatientId.setSelectedIndex(0);
+        cbClinicianId.setSelectedIndex(0);
+        cbFacilityId.setSelectedIndex(0);
+        txtDate.setText("");
+        txtTime.setText("");
+        txtDuration.setText("");
+        txtType.setText("");
+        cbStatus.setSelectedIndex(0);
+        txtReason.setText("");
+        txtNotes.setText("");
+        txtCreatedDate.setText("");
+        txtLastModified.setText("");
+    }
+    private String val(int row, int col) {
+        Object v = model.getValueAt(row, col);
+        return v == null ? "" : v.toString();
     }
     private void deleteAppointment() {
         int row = table.getSelectedRow();

@@ -56,7 +56,12 @@ public class PrescriptionView extends JPanel {
                         "Duration", "Qty", "Instructions",
                         "Pharmacy", "Status", "Issue", "Collected"
                 }, 0
-        );
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
+        };
         table = new JTable(model);
         table.setRowHeight(22);
         JPanel form = new JPanel(new GridBagLayout());
@@ -135,6 +140,14 @@ public class PrescriptionView extends JPanel {
         splitPane.setDividerLocation(0.55);
         splitPane.setResizeWeight(0.55);
         add(splitPane, BorderLayout.CENTER);
+        form.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (table.getSelectedRow() >= 0) {
+                    table.clearSelection();
+                }
+            }
+        });
         JButton btnAdd    = new JButton("Add");
         JButton btnUpdate = new JButton("Update Selected");
         JButton btnDelete = new JButton("Delete Selected");
@@ -146,8 +159,26 @@ public class PrescriptionView extends JPanel {
         btnPanel.add(btnUpdate);
         btnPanel.add(btnDelete);
         add(btnPanel, BorderLayout.NORTH);
+        btnUpdate.setVisible(false);
         table.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) loadSelectedRowIntoForm();
+            if (!e.getValueIsAdjusting()) {
+                loadSelectedRowIntoForm();
+                boolean hasSelection = table.getSelectedRow() >= 0;
+                btnAdd.setVisible(!hasSelection);
+                btnUpdate.setVisible(hasSelection);
+            }
+        });
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                if (row < 0) {
+                    table.clearSelection();
+                    PrescriptionView.this.clearForm();
+                    btnAdd.setVisible(true);
+                    btnUpdate.setVisible(false);
+                }
+            }
         });
     }
     private void addPair(JPanel panel, GridBagConstraints gc, int row,
@@ -271,7 +302,10 @@ public class PrescriptionView extends JPanel {
     }
     private void loadSelectedRowIntoForm() {
         int row = table.getSelectedRow();
-        if (row < 0) return;
+        if (row < 0) {
+            clearForm();
+            return;
+        }
         lblId.setText(model.getValueAt(row, 0).toString());
         cbPatientId.setSelectedItem(model.getValueAt(row, 1));
         cbClinicianId.setSelectedItem(model.getValueAt(row, 2));
@@ -329,6 +363,23 @@ public class PrescriptionView extends JPanel {
             sb.append("- ").append(label)
               .append(" must be in format ").append(DATE_PATTERN).append(".\n");
         }
+    }
+    private void clearForm() {
+        lblId.setText("RX001");
+        cbPatientId.setSelectedIndex(0);
+        cbClinicianId.setSelectedIndex(0);
+        cbAppointmentId.setSelectedIndex(0);
+        txtPrescDate.setText("");
+        cbDrug.setSelectedIndex(0);
+        txtDosage.setText("");
+        txtFrequency.setText("");
+        txtDuration.setText("");
+        txtQuantity.setText("");
+        cbPharmacy.setSelectedIndex(0);
+        cbStatus.setSelectedIndex(0);
+        txtIssueDate.setText("");
+        txtCollectionDate.setText("");
+        txtInstructions.setText("");
     }
     private void clearFormButKeepIds() {
         txtPrescDate.setText("");

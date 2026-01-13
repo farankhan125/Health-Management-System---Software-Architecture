@@ -20,6 +20,7 @@ public class PatientView extends JPanel {
     private JTextField txtAddress, txtPostcode;
     private JTextField txtEmergencyName, txtEmergencyPhone;
     private JTextField txtGpSurgery;
+    private JButton btnAdd, btnUpdate, btnDelete;
     public PatientView() {
         setLayout(new BorderLayout(15, 15));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -30,7 +31,12 @@ public class PatientView extends JPanel {
                         "Emergency Name", "Emergency Phone",
                         "Registration Date", "GP Surgery ID"
                 }, 0
-        );
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
+        };
         table = new JTable(tableModel);
         table.setRowHeight(22);
         JPanel form = new JPanel(new GridBagLayout());
@@ -79,14 +85,46 @@ public class PatientView extends JPanel {
         splitPane.setDividerLocation(0.55);
         splitPane.setResizeWeight(0.55);
         add(splitPane, BorderLayout.CENTER);
-        JButton btnAdd = new JButton("Add Patient");
-        JButton btnDelete = new JButton("Delete Selected");
+        form.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (table.getSelectedRow() >= 0) {
+                    table.clearSelection();
+                }
+            }
+        });
+        btnAdd = new JButton("Add Patient");
+        btnUpdate = new JButton("Update Selected");
+        btnDelete = new JButton("Delete Selected");
         btnAdd.addActionListener(e -> onAdd());
+        btnUpdate.addActionListener(e -> onUpdate());
         btnDelete.addActionListener(e -> onDelete());
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttons.add(btnAdd);
+        buttons.add(btnUpdate);
         buttons.add(btnDelete);
         add(buttons, BorderLayout.NORTH);
+        btnUpdate.setVisible(false);
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                loadSelectedRowIntoForm();
+                boolean hasSelection = table.getSelectedRow() >= 0;
+                btnAdd.setVisible(!hasSelection);
+                btnUpdate.setVisible(hasSelection);
+            }
+        });
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                if (row < 0) {
+                    table.clearSelection();
+                    clearForm();
+                    btnAdd.setVisible(true);
+                    btnUpdate.setVisible(false);
+                }
+            }
+        });
     }
     private void add4(JPanel panel, GridBagConstraints gc, int row,
                       String label1, JComponent field1,
@@ -147,6 +185,29 @@ public class PatientView extends JPanel {
         );
         controller.addPatient(p);
     }
+    private void onUpdate() {
+        if (controller == null) return;
+        Patient p = new Patient(
+                lblAutoId.getText(),
+                txtFirstName.getText(),
+                txtLastName.getText(),
+                txtDob.getText(),
+                txtNhs.getText(),
+                (String) cbGender.getSelectedItem(),
+                txtPhone.getText(),
+                txtEmail.getText(),
+                txtAddress.getText(),
+                txtPostcode.getText(),
+                txtEmergencyName.getText(),
+                txtEmergencyPhone.getText(),
+                txtRegistrationDate.getText(),
+                txtGpSurgery.getText()
+        );
+        controller.updatePatient(p);
+        clearForm();
+        btnAdd.setVisible(true);
+        btnUpdate.setVisible(false);
+    }
     private void onDelete() {
         if (controller == null) return;
         int row = table.getSelectedRow();
@@ -157,6 +218,47 @@ public class PatientView extends JPanel {
         String id = tableModel.getValueAt(row, 0).toString();
         Patient p = controller.findById(id);
         if (p != null) controller.deletePatient(p);
+    }
+    private void loadSelectedRowIntoForm() {
+        int row = table.getSelectedRow();
+        if (row < 0) {
+            clearForm();
+            return;
+        }
+        lblAutoId.setText(val(row, 0));
+        txtFirstName.setText(val(row, 1));
+        txtLastName.setText(val(row, 2));
+        txtDob.setText(val(row, 3));
+        txtNhs.setText(val(row, 4));
+        cbGender.setSelectedItem(val(row, 5));
+        txtPhone.setText(val(row, 6));
+        txtEmail.setText(val(row, 7));
+        txtAddress.setText(val(row, 8));
+        txtPostcode.setText(val(row, 9));
+        txtEmergencyName.setText(val(row, 10));
+        txtEmergencyPhone.setText(val(row, 11));
+        txtRegistrationDate.setText(val(row, 12));
+        txtGpSurgery.setText(val(row, 13));
+    }
+    private void clearForm() {
+        lblAutoId.setText("P001");
+        txtFirstName.setText("");
+        txtLastName.setText("");
+        txtDob.setText("");
+        txtNhs.setText("");
+        cbGender.setSelectedIndex(0);
+        txtPhone.setText("");
+        txtEmail.setText("");
+        txtAddress.setText("");
+        txtPostcode.setText("");
+        txtEmergencyName.setText("");
+        txtEmergencyPhone.setText("");
+        txtRegistrationDate.setText("");
+        txtGpSurgery.setText("");
+    }
+    private String val(int row, int col) {
+        Object v = tableModel.getValueAt(row, col);
+        return v == null ? "" : v.toString();
     }
     private static class DigitsOnlyFilter extends DocumentFilter {
         @Override
