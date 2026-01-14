@@ -252,6 +252,8 @@ public class PrescriptionView extends JPanel {
         }
         Prescription p = buildFromForm(lblId.getText());
         controller.addPrescription(p);
+        JOptionPane.showMessageDialog(this,
+            "Prescription " + p.getId() + " added successfully.");
         clearFormButKeepIds();
     }
     private void onUpdate() {

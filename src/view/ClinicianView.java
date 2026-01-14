@@ -164,6 +164,9 @@ public class ClinicianView extends JPanel {
                 startDate
         );
         controller.addClinician(c);
+        JOptionPane.showMessageDialog(this,
+            "Clinician " + c.getId() + " added successfully.");
+        clearClinicianForm();
     }
     private void onUpdate() {
         String startDate = txtStartDate.getText().trim().isEmpty() ? "" : txtStartDate.getText().trim();

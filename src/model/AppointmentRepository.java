@@ -79,4 +79,42 @@ public class AppointmentRepository {
             if (a.getId().equals(id)) return a;
         return null;
     }
+    public void update(Appointment a) {
+        int idx = -1;
+        for (int i = 0; i < appointments.size(); i++) {
+            if (appointments.get(i).getId().equals(a.getId())) {
+                idx = i;
+                break;
+            }
+        }
+        if (idx >= 0) {
+            appointments.set(idx, a);
+            rewriteCsv();
+        }
+    }
+    private void rewriteCsv() {
+        try {
+            List<String[]> rows = new ArrayList<>();
+            for (Appointment a : appointments) {
+                rows.add(new String[]{
+                        a.getId(),
+                        a.getPatientId(),
+                        a.getClinicianId(),
+                        a.getFacilityId(),
+                        a.getAppointmentDate(),
+                        a.getAppointmentTime(),
+                        a.getDurationMinutes(),
+                        a.getAppointmentType(),
+                        a.getStatus(),
+                        a.getReasonForVisit(),
+                        a.getNotes(),
+                        a.getCreatedDate(),
+                        a.getLastModified()
+                });
+            }
+            CsvUtils.writeCsv(csvPath, rows);
+        } catch (IOException ex) {
+            System.err.println("Failed to rewrite appointment CSV: " + ex.getMessage());
+        }
+    }
 }

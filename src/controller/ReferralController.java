@@ -78,13 +78,7 @@ public class ReferralController {
         refreshReferrals();
     }
     public void updateReferral(Referral r) {
-        for (Referral existing : referralManager.getAllReferrals()) {
-            if (existing.getId().equals(r.getId())) {
-                referralManager.getAllReferrals().remove(existing);
-                break;
-            }
-        }
-        referralManager.createReferral(r);
+        referralManager.updateReferral(r);
         refreshReferrals();
     }
 }

@@ -24,8 +24,7 @@ public class PatientController {
         refreshView();
     }
     public void updatePatient(Patient p) {
-        repository.remove(repository.findById(p.getId()));
-        repository.addAndAppend(p);
+        repository.update(p);
         refreshView();
     }
     public void deletePatient(Patient p) {

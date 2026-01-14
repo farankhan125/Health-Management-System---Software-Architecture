@@ -36,6 +36,9 @@ public class ReferralManager {
         referralRepository.addAndAppend(r);
         writeReferralText(r);
     }
+    public void updateReferral(Referral r) {
+        referralRepository.update(r);
+    }
     public List<Referral> getAllReferrals() {
         return referralRepository.getAll();
     }

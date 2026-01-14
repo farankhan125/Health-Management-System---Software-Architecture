@@ -184,6 +184,9 @@ public class PatientView extends JPanel {
                 txtGpSurgery.getText()
         );
         controller.addPatient(p);
+        JOptionPane.showMessageDialog(this,
+            "Patient " + p.getId() + " added successfully.");
+        clearForm();
     }
     private void onUpdate() {
         if (controller == null) return;

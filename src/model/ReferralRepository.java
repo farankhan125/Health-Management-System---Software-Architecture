@@ -67,4 +67,45 @@ public class ReferralRepository {
             System.err.println("Failed to append referral: " + ex.getMessage());
         }
     }
+    public void update(Referral r) {
+        int idx = -1;
+        for (int i = 0; i < referrals.size(); i++) {
+            if (referrals.get(i).getId().equals(r.getId())) {
+                idx = i;
+                break;
+            }
+        }
+        if (idx >= 0) {
+            referrals.set(idx, r);
+            rewriteCsv();
+        }
+    }
+    private void rewriteCsv() {
+        try {
+            List<String[]> rows = new ArrayList<>();
+            for (Referral r : referrals) {
+                rows.add(new String[]{
+                        r.getId(),
+                        r.getPatientId(),
+                        r.getReferringClinicianId(),
+                        r.getReferredToClinicianId(),
+                        r.getReferringFacilityId(),
+                        r.getReferredToFacilityId(),
+                        r.getReferralDate(),
+                        r.getUrgencyLevel(),
+                        r.getReferralReason(),
+                        r.getClinicalSummary(),
+                        r.getRequestedService(),
+                        r.getStatus(),
+                        r.getAppointmentId(),
+                        r.getNotes(),
+                        r.getCreatedDate(),
+                        r.getLastUpdated()
+                });
+            }
+            CsvUtils.writeCsv(csvPath, rows);
+        } catch (IOException ex) {
+            System.err.println("Failed to rewrite referral CSV: " + ex.getMessage());
+        }
+    }
 }

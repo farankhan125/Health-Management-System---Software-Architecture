@@ -71,4 +71,33 @@ public class ClinicianRepository {
             if (c.getId().equals(id)) return c;
         return null;
     }
+    public void update(Clinician c) {
+        int idx = -1;
+        for (int i = 0; i < clinicians.size(); i++) {
+            if (clinicians.get(i).getId().equals(c.getId())) {
+                idx = i;
+                break;
+            }
+        }
+        if (idx >= 0) {
+            clinicians.set(idx, c);
+            rewriteCsv();
+        }
+    }
+    private void rewriteCsv() {
+        try {
+            List<String[]> rows = new ArrayList<>();
+            for (Clinician c : clinicians) {
+                rows.add(new String[]{
+                        c.getId(), c.getTitle(), c.getFirstName(), c.getLastName(),
+                        c.getSpeciality(), c.getGmcNumber(), c.getPhone(), c.getEmail(),
+                        c.getWorkplaceId(), c.getWorkplaceType(), c.getEmploymentStatus(),
+                        c.getStartDate()
+                });
+            }
+            CsvUtils.writeCsv(csvPath, rows);
+        } catch (IOException ex) {
+            System.err.println("Failed to rewrite clinician CSV: " + ex.getMessage());
+        }
+    }
 }

@@ -86,4 +86,43 @@ public class PatientRepository {
         }
         return null;
     }
+    public void update(Patient p) {
+        int idx = -1;
+        for (int i = 0; i < patients.size(); i++) {
+            if (patients.get(i).getId().equals(p.getId())) {
+                idx = i;
+                break;
+            }
+        }
+        if (idx >= 0) {
+            patients.set(idx, p);
+            rewriteCsv();
+        }
+    }
+    private void rewriteCsv() {
+        try {
+            List<String[]> rows = new ArrayList<>();
+            for (Patient p : patients) {
+                rows.add(new String[]{
+                        p.getId(),
+                        p.getFirstName(),
+                        p.getLastName(),
+                        p.getDateOfBirth(),
+                        p.getNhsNumber(),
+                        p.getGender(),
+                        p.getPhoneNumber(),
+                        p.getEmail(),
+                        p.getAddress(),
+                        p.getPostcode(),
+                        p.getEmergencyContactName(),
+                        p.getEmergencyContactPhone(),
+                        p.getRegistrationDate(),
+                        p.getGpSurgeryId()
+                });
+            }
+            CsvUtils.writeCsv(csvPath, rows);
+        } catch (IOException ex) {
+            System.err.println("Failed to rewrite patient CSV: " + ex.getMessage());
+        }
+    }
 }

@@ -241,6 +241,9 @@ public class AppointmentView extends JPanel {
                 txtLastModified.getText()
         );
         controller.addAppointment(a);
+        JOptionPane.showMessageDialog(this,
+            "Appointment " + a.getId() + " added successfully.");
+        clearAppointmentForm();
         lblId.setText(controller.generateId());
     }
     private void updateAppointment() {

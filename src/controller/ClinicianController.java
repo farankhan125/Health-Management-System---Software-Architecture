@@ -26,8 +26,7 @@ public ClinicianView getView() {
         refresh();
     }
     public void updateClinician(Clinician c) {
-        repository.remove(repository.findById(c.getId()));
-        repository.addAndAppend(c);
+        repository.update(c);
         refresh();
     }
     public void deleteById(String id) {
