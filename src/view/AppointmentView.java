@@ -260,6 +260,8 @@ public class AppointmentView extends JPanel {
                 txtLastModified.getText()
         );
         controller.updateAppointment(a);
+        JOptionPane.showMessageDialog(this,
+            "Appointment " + a.getId() + " updated successfully.");
         clearAppointmentForm();
         btnAdd.setVisible(true);
         btnUpdate.setVisible(false);
@@ -285,7 +287,7 @@ public class AppointmentView extends JPanel {
         txtLastModified.setText(val(row, 12));
     }
     private void clearAppointmentForm() {
-        lblId.setText("");
+        updateNextId();
         cbPatientId.setSelectedIndex(0);
         cbClinicianId.setSelectedIndex(0);
         cbFacilityId.setSelectedIndex(0);
@@ -298,6 +300,19 @@ public class AppointmentView extends JPanel {
         txtNotes.setText("");
         txtCreatedDate.setText("");
         txtLastModified.setText("");
+    }
+    private void updateNextId() {
+        String nextId = "A001";
+        if (model.getRowCount() > 0) {
+            String lastId = (String) model.getValueAt(model.getRowCount() - 1, 0);
+            try {
+                int num = Integer.parseInt(lastId.substring(1)) + 1;
+                nextId = String.format("A%03d", num);
+            } catch (Exception e) {
+                nextId = "A001";
+            }
+        }
+        lblId.setText(nextId);
     }
     private String val(int row, int col) {
         Object v = model.getValueAt(row, col);

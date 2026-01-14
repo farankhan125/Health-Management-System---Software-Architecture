@@ -204,6 +204,8 @@ public class PatientView extends JPanel {
                 txtGpSurgery.getText()
         );
         controller.updatePatient(p);
+        JOptionPane.showMessageDialog(this,
+            "Patient " + p.getId() + " updated successfully.");
         clearForm();
         btnAdd.setVisible(true);
         btnUpdate.setVisible(false);
@@ -241,7 +243,7 @@ public class PatientView extends JPanel {
         txtGpSurgery.setText(val(row, 13));
     }
     private void clearForm() {
-        lblAutoId.setText("P001");
+        updateNextId();
         txtFirstName.setText("");
         txtLastName.setText("");
         txtDob.setText("");
@@ -255,6 +257,19 @@ public class PatientView extends JPanel {
         txtEmergencyPhone.setText("");
         txtRegistrationDate.setText("");
         txtGpSurgery.setText("");
+    }
+    private void updateNextId() {
+        String nextId = "P001";
+        if (tableModel.getRowCount() > 0) {
+            String lastId = (String) tableModel.getValueAt(tableModel.getRowCount() - 1, 0);
+            try {
+                int num = Integer.parseInt(lastId.substring(1)) + 1;
+                nextId = String.format("P%03d", num);
+            } catch (Exception e) {
+                nextId = "P001";
+            }
+        }
+        lblAutoId.setText(nextId);
     }
     private String val(int row, int col) {
         Object v = tableModel.getValueAt(row, col);

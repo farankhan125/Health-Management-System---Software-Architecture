@@ -182,6 +182,8 @@ public class ClinicianView extends JPanel {
                 startDate
         );
         controller.updateClinician(c);
+        JOptionPane.showMessageDialog(this,
+            "Clinician " + c.getId() + " updated successfully.");
         clearClinicianForm();
         btnAdd.setVisible(true);
         btnUpdate.setVisible(false);
@@ -251,7 +253,7 @@ public class ClinicianView extends JPanel {
         txtStartDate.setText(val(row, 11));
     }
     private void clearClinicianForm() {
-        lblId.setText("C001");
+        updateNextId();
         cmbTitle.setSelectedIndex(0);
         txtFirstName.setText("");
         txtLastName.setText("");
@@ -263,6 +265,19 @@ public class ClinicianView extends JPanel {
         cmbWorkplaceType.setSelectedIndex(0);
         cmbEmployment.setSelectedIndex(0);
         txtStartDate.setText("");
+    }
+    private void updateNextId() {
+        String nextId = "C001";
+        if (model.getRowCount() > 0) {
+            String lastId = (String) model.getValueAt(model.getRowCount() - 1, 0);
+            try {
+                int num = Integer.parseInt(lastId.substring(1)) + 1;
+                nextId = String.format("C%03d", num);
+            } catch (Exception e) {
+                nextId = "C001";
+            }
+        }
+        lblId.setText(nextId);
     }
     private String val(int row, int col) {
         Object v = model.getValueAt(row, col);

@@ -270,6 +270,8 @@ public class PrescriptionView extends JPanel {
         String id = lblId.getText();
         Prescription p = buildFromForm(id);
         controller.updatePrescription(p);
+        JOptionPane.showMessageDialog(this,
+                "Prescription " + id + " updated successfully.");
     }
     private void onDelete() {
         if (controller == null) return;
@@ -342,12 +344,7 @@ public class PrescriptionView extends JPanel {
                 sb.append("- Duration must be a number.\n");
             }
         }
-        if (!txtQuantity.getText().trim().isEmpty()) {
-            try { Integer.parseInt(txtQuantity.getText().trim()); }
-            catch (NumberFormatException e) {
-                sb.append("- Quantity must be a number.\n");
-            }
-        }
+        // Quantity may be free-text (e.g., "one pack", "30 tablets")
         checkDate(txtPrescDate.getText().trim(), "Prescription Date", sb);
         if (!txtIssueDate.getText().trim().isEmpty())
             checkDate(txtIssueDate.getText().trim(), "Issue Date", sb);
@@ -365,7 +362,7 @@ public class PrescriptionView extends JPanel {
         }
     }
     private void clearForm() {
-        lblId.setText("RX001");
+        updateNextId();
         cbPatientId.setSelectedIndex(0);
         cbClinicianId.setSelectedIndex(0);
         cbAppointmentId.setSelectedIndex(0);
@@ -380,6 +377,19 @@ public class PrescriptionView extends JPanel {
         txtIssueDate.setText("");
         txtCollectionDate.setText("");
         txtInstructions.setText("");
+    }
+    private void updateNextId() {
+        String nextId = "RX001";
+        if (model.getRowCount() > 0) {
+            String lastId = (String) model.getValueAt(model.getRowCount() - 1, 0);
+            try {
+                int num = Integer.parseInt(lastId.substring(2)) + 1;
+                nextId = String.format("RX%03d", num);
+            } catch (Exception e) {
+                nextId = "RX001";
+            }
+        }
+        lblId.setText(nextId);
     }
     private void clearFormButKeepIds() {
         txtPrescDate.setText("");
