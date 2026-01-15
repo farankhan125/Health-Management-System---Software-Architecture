@@ -18,18 +18,18 @@ public class ClinicianRepository {
         try {
             for (String[] row : CsvUtils.readCsv(csvPath)) {
                 Clinician c = new Clinician(
-                        row[0],   
-                        row[1],   
-                        row[2],   
-                        row[3],   
-                        row[4],   
-                        row[5],   
-                        row[6],   
-                        row[7],   
-                        row[8],   
-                        row[9],   
-                        row[10],  
-                        row[11]   
+                        row[0],   // id
+                        row[3],   // title
+                        row[1],   // firstName
+                        row[2],   // lastName
+                        row[4],   // speciality
+                        row[5],   // gmcNumber
+                        row[6],   // phone
+                        row[7],   // email
+                        row[8],   // workplaceId
+                        row[9],   // workplaceType
+                        row[10],  // employmentStatus
+                        row[11]   // startDate
                 );
                 clinicians.add(c);
             }
@@ -51,7 +51,7 @@ public class ClinicianRepository {
         clinicians.add(c);
         try {
             CsvUtils.appendLine(csvPath, new String[]{
-                    c.getId(), c.getTitle(), c.getFirstName(), c.getLastName(),
+                    c.getId(), c.getFirstName(), c.getLastName(), c.getTitle(),
                     c.getSpeciality(), c.getGmcNumber(), c.getPhone(), c.getEmail(),
                     c.getWorkplaceId(), c.getWorkplaceType(), c.getEmploymentStatus(),
                     c.getStartDate()
@@ -89,7 +89,7 @@ public class ClinicianRepository {
             List<String[]> rows = new ArrayList<>();
             for (Clinician c : clinicians) {
                 rows.add(new String[]{
-                        c.getId(), c.getTitle(), c.getFirstName(), c.getLastName(),
+                        c.getId(), c.getFirstName(), c.getLastName(), c.getTitle(),
                         c.getSpeciality(), c.getGmcNumber(), c.getPhone(), c.getEmail(),
                         c.getWorkplaceId(), c.getWorkplaceType(), c.getEmploymentStatus(),
                         c.getStartDate()

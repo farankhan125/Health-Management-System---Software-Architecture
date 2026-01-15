@@ -43,6 +43,9 @@ public class PrescriptionController {
         view.showPrescriptions(repository.getAll());
         view.setNextId(repository.generateNewId());
     }
+    public List<Prescription> getAllPrescriptions() {
+        return repository.getAll();
+    }
     public List<String> getPatientIds() {
         List<String> ids = new ArrayList<>();
         for (Patient p : patientRepository.getAll()) {

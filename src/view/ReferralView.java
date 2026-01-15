@@ -27,6 +27,25 @@ public class ReferralView extends JPanel {
             DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public ReferralView() {
         setLayout(new BorderLayout(10,10));
+        setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        
+        // Header panel
+        JPanel headerPanel = new JPanel();
+        headerPanel.setBackground(new Color(57, 105, 138));
+        headerPanel.setPreferredSize(new Dimension(800, 60));
+        headerPanel.setLayout(new BorderLayout());
+        
+        JLabel titleLabel = new JLabel("Referrals");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        
+        headerPanel.add(titleLabel, BorderLayout.WEST);
+        add(headerPanel, BorderLayout.NORTH);
+        
+        JPanel contentPanel = new JPanel(new BorderLayout(10, 10));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
         model = new DefaultTableModel(
                 new Object[]{
                         "ID",
@@ -102,7 +121,8 @@ public class ReferralView extends JPanel {
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, formContainer, new JScrollPane(table));
         splitPane.setDividerLocation(0.55);
         splitPane.setResizeWeight(0.55);
-        add(splitPane, BorderLayout.CENTER);
+        contentPanel.add(splitPane, BorderLayout.CENTER);
+        add(contentPanel, BorderLayout.CENTER);
         formContainer.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -414,5 +434,59 @@ public class ReferralView extends JPanel {
     private String val(int row, int col) {
         Object v = model.getValueAt(row, col);
         return v == null ? "" : v.toString();
+    }
+    
+    public void setPatientFilterMode(String patientId) {
+        btnAdd.setVisible(false);
+        btnUpdate.setVisible(false);
+        disableReferralFormFields();
+        filterReferralsByPatient(patientId);
+    }
+    
+    private void filterReferralsByPatient(String patientId) {
+        // Show only referrals for this patient
+        if (controller != null) {
+            java.util.List<Referral> all = controller.getAllReferrals();
+            model.setRowCount(0);
+            for (Referral r : all) {
+                if (r.getPatientId().equals(patientId)) {
+                    model.addRow(new Object[]{
+                            r.getId(),
+                            r.getPatientId(),
+                            r.getReferringClinicianId(),
+                            r.getReferredToClinicianId(),
+                            r.getReferringFacilityId(),
+                            r.getReferredToFacilityId(),
+                            r.getReferralDate(),
+                            r.getUrgencyLevel(),
+                            r.getReferralReason(),
+                            r.getClinicalSummary(),
+                            r.getRequestedService(),
+                            r.getStatus(),
+                            r.getAppointmentId(),
+                            r.getNotes(),
+                            r.getCreatedDate(),
+                            r.getLastUpdated()
+                    });
+                }
+            }
+        }
+    }
+    
+    private void disableReferralFormFields() {
+        cbPatientId.setEnabled(false);
+        cbRefClin.setEnabled(false);
+        cbToClin.setEnabled(false);
+        cbRefFacility.setEnabled(false);
+        cbToFacility.setEnabled(false);
+        txtReferralDate.setEditable(false);
+        cbUrgency.setEnabled(false);
+        txtReason.setEditable(false);
+        txtClinicalSummary.setEditable(false);
+        txtRequestedService.setEditable(false);
+        cbStatus.setEnabled(false);
+        cbAppointmentId.setEnabled(false);
+        txtNotes.setEditable(false);
+        table.setEnabled(false);
     }
 }

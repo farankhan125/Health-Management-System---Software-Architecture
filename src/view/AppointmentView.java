@@ -27,6 +27,25 @@ public class AppointmentView extends JPanel {
     private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     public AppointmentView() {
         setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        
+        // Header panel
+        JPanel headerPanel = new JPanel();
+        headerPanel.setBackground(new Color(57, 105, 138));
+        headerPanel.setPreferredSize(new Dimension(800, 60));
+        headerPanel.setLayout(new BorderLayout());
+        
+        JLabel titleLabel = new JLabel("Appointments");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        
+        headerPanel.add(titleLabel, BorderLayout.WEST);
+        add(headerPanel, BorderLayout.NORTH);
+        
+        JPanel contentPanel = new JPanel(new BorderLayout(10, 10));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
         model = new DefaultTableModel(
                 new Object[]{
                         "ID", "Patient", "Clinician", "Facility",
@@ -81,11 +100,11 @@ public class AppointmentView extends JPanel {
         txtType = new JTextField();
         txtReason = new JTextField();
         cbStatus = new JComboBox<>(new String[]{
-                "SCHEDULED",
-                "RESCHEDULED",
-                "CANCELLED",
-                "COMPLETED",
-                "NO-SHOW"
+                "Scheduled",
+                "Rescheduled",
+                "Cancelled",
+                "Completed",
+                "No-Show"
         });
         cbStatus.setFont(new Font("SansSerif", Font.PLAIN, 12));
         txtNotes = new JTextArea(3, 15);
@@ -105,7 +124,8 @@ public class AppointmentView extends JPanel {
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, form, new JScrollPane(table));
         splitPane.setDividerLocation(0.55);
         splitPane.setResizeWeight(0.55);
-        add(splitPane, BorderLayout.CENTER);
+        contentPanel.add(splitPane, BorderLayout.CENTER);
+        add(contentPanel, BorderLayout.CENTER);
         form.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -379,4 +399,53 @@ public class AppointmentView extends JPanel {
             }
         }
     }
-}
+    
+    public void setPatientFilterMode(String patientId) {
+        btnAdd.setVisible(false);
+        btnUpdate.setVisible(false);
+        disableAppointmentFormFields();
+        filterAppointmentsByPatient(patientId);
+    }
+    
+    private void filterAppointmentsByPatient(String patientId) {
+        // Show only appointments for this patient
+        if (controller != null) {
+            java.util.List<Appointment> all = controller.getAllAppointments();
+            model.setRowCount(0);
+            for (Appointment a : all) {
+                if (a.getPatientId().equals(patientId)) {
+                    model.addRow(new Object[]{
+                            a.getId(),
+                            a.getPatientId(),
+                            a.getClinicianId(),
+                            a.getFacilityId(),
+                            a.getAppointmentDate(),
+                            a.getAppointmentTime(),
+                            a.getDurationMinutes(),
+                            a.getAppointmentType(),
+                            a.getStatus(),
+                            a.getReasonForVisit(),
+                            a.getNotes(),
+                            a.getCreatedDate(),
+                            a.getLastModified()
+                    });
+                }
+            }
+        }
+    }
+    
+    private void disableAppointmentFormFields() {
+        cbPatientId.setEnabled(false);
+        cbClinicianId.setEnabled(false);
+        cbFacilityId.setEnabled(false);
+        txtDate.setEditable(false);
+        txtTime.setEditable(false);
+        txtDuration.setEditable(false);
+        txtType.setEditable(false);
+        cbStatus.setEnabled(false);
+        txtReason.setEditable(false);
+        txtNotes.setEditable(false);
+        txtCreatedDate.setEditable(false);
+        txtLastModified.setEditable(false);
+        table.setEnabled(false);
+    }}

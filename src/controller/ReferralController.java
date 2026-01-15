@@ -31,6 +31,9 @@ public class ReferralController {
     public void refreshReferrals() {
         view.showReferrals(referralManager.getAllReferrals());
     }
+    public List<Referral> getAllReferrals() {
+        return referralManager.getAllReferrals();
+    }
     public List<String> getPatientIds() {
         List<String> ids = new ArrayList<>();
         for (Patient p : patientRepo.getAll()) {

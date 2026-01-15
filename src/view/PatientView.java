@@ -23,7 +23,25 @@ public class PatientView extends JPanel {
     private JButton btnAdd, btnUpdate, btnDelete;
     public PatientView() {
         setLayout(new BorderLayout(15, 15));
-        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        
+        // Header panel
+        JPanel headerPanel = new JPanel();
+        headerPanel.setBackground(new Color(57, 105, 138));
+        headerPanel.setPreferredSize(new Dimension(800, 60));
+        headerPanel.setLayout(new BorderLayout());
+        
+        JLabel titleLabel = new JLabel("Patients");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        
+        headerPanel.add(titleLabel, BorderLayout.WEST);
+        add(headerPanel, BorderLayout.NORTH);
+        
+        JPanel contentPanel = new JPanel(new BorderLayout(15, 15));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
         tableModel = new DefaultTableModel(
                 new Object[]{
                         "ID", "First Name", "Last Name", "DOB", "NHS",
@@ -84,7 +102,8 @@ public class PatientView extends JPanel {
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, form, new JScrollPane(table));
         splitPane.setDividerLocation(0.55);
         splitPane.setResizeWeight(0.55);
-        add(splitPane, BorderLayout.CENTER);
+        contentPanel.add(splitPane, BorderLayout.CENTER);
+        add(contentPanel, BorderLayout.CENTER);
         form.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -278,6 +297,65 @@ public class PatientView extends JPanel {
         Object v = tableModel.getValueAt(row, col);
         return v == null ? "" : v.toString();
     }
+    
+    public void setPatientReadOnly(String patientId) {
+        // Hide add/update/delete buttons
+        btnAdd.setVisible(false);
+        btnUpdate.setVisible(false);
+        
+        // Disable all form fields
+        disableFormFields();
+        
+        // Show only this patient's record
+        if (controller != null) {
+            Patient p = controller.findById(patientId);
+            if (p != null) {
+                tableModel.setRowCount(0);
+                tableModel.addRow(new Object[]{
+                        p.getId(), p.getFirstName(), p.getLastName(),
+                        p.getDateOfBirth(), p.getNhsNumber(), p.getGender(),
+                        p.getPhoneNumber(), p.getEmail(), p.getAddress(),
+                        p.getPostcode(), p.getEmergencyContactName(),
+                        p.getEmergencyContactPhone(), p.getRegistrationDate(),
+                        p.getGpSurgeryId()
+                });
+                
+                // Load patient data into form
+                lblAutoId.setText(p.getId());
+                txtFirstName.setText(p.getFirstName());
+                txtLastName.setText(p.getLastName());
+                txtDob.setText(p.getDateOfBirth());
+                txtNhs.setText(p.getNhsNumber());
+                cbGender.setSelectedItem(p.getGender());
+                txtPhone.setText(p.getPhoneNumber());
+                txtEmail.setText(p.getEmail());
+                txtAddress.setText(p.getAddress());
+                txtPostcode.setText(p.getPostcode());
+                txtEmergencyName.setText(p.getEmergencyContactName());
+                txtEmergencyPhone.setText(p.getEmergencyContactPhone());
+                txtRegistrationDate.setText(p.getRegistrationDate());
+                txtGpSurgery.setText(p.getGpSurgeryId());
+            }
+        }
+    }
+    
+    private void disableFormFields() {
+        txtFirstName.setEditable(false);
+        txtLastName.setEditable(false);
+        txtDob.setEditable(false);
+        txtNhs.setEditable(false);
+        cbGender.setEnabled(false);
+        txtPhone.setEditable(false);
+        txtEmail.setEditable(false);
+        txtAddress.setEditable(false);
+        txtPostcode.setEditable(false);
+        txtEmergencyName.setEditable(false);
+        txtEmergencyPhone.setEditable(false);
+        txtRegistrationDate.setEditable(false);
+        txtGpSurgery.setEditable(false);
+        table.setEnabled(false);
+    }
+    
     private static class DigitsOnlyFilter extends DocumentFilter {
         @Override
         public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)

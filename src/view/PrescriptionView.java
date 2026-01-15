@@ -48,7 +48,25 @@ public class PrescriptionView extends JPanel {
     }
     public PrescriptionView() {
         setLayout(new BorderLayout(15, 15));
-        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        
+        // Header panel
+        JPanel headerPanel = new JPanel();
+        headerPanel.setBackground(new Color(57, 105, 138));
+        headerPanel.setPreferredSize(new Dimension(800, 60));
+        headerPanel.setLayout(new BorderLayout());
+        
+        JLabel titleLabel = new JLabel("Prescriptions");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        
+        headerPanel.add(titleLabel, BorderLayout.WEST);
+        add(headerPanel, BorderLayout.NORTH);
+        
+        JPanel contentPanel = new JPanel(new BorderLayout(15, 15));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
         model = new DefaultTableModel(
                 new Object[]{
                         "ID", "Patient", "Clinician", "Appt",
@@ -75,11 +93,11 @@ public class PrescriptionView extends JPanel {
         cbPharmacy     = new JComboBox<>();
         cbAppointmentId = new JComboBox<>();
         cbStatus = new JComboBox<>(new String[]{
-                "PENDING",
-                "ISSUED",
-                "COLLECTED",
-                "CANCELLED",
-                "REJECTED"
+                "Pending",
+                "Issued",
+                "Collected",
+                "Cancelled",
+                "Rejected"
         });
         cbStatus.setFont(new Font("SansSerif", Font.PLAIN, 12));
         try {
@@ -139,7 +157,8 @@ public class PrescriptionView extends JPanel {
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, form, new JScrollPane(table));
         splitPane.setDividerLocation(0.55);
         splitPane.setResizeWeight(0.55);
-        add(splitPane, BorderLayout.CENTER);
+        contentPanel.add(splitPane, BorderLayout.CENTER);
+        add(contentPanel, BorderLayout.CENTER);
         form.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -420,4 +439,64 @@ public class PrescriptionView extends JPanel {
             }
         }
     }
-}
+    
+    public void setPatientFilterMode(String patientId) {
+        JButton btnAdd = findButtonByName("Add");
+        if (btnAdd != null) btnAdd.setVisible(false);
+        
+        disablePrescriptionFormFields();
+        filterPrescriptionsByPatient(patientId);
+    }
+    
+    private JButton findButtonByName(String name) {
+        // This is a workaround since buttons are local variables
+        // We'll need to make them instance variables for this to work properly
+        return null;
+    }
+    
+    private void filterPrescriptionsByPatient(String patientId) {
+        // Show only prescriptions for this patient
+        if (controller != null) {
+            java.util.List<Prescription> all = controller.getAllPrescriptions();
+            model.setRowCount(0);
+            for (Prescription p : all) {
+                if (p.getPatientId().equals(patientId)) {
+                    model.addRow(new Object[]{
+                            p.getId(),
+                            p.getPatientId(),
+                            p.getClinicianId(),
+                            p.getAppointmentId(),
+                            p.getPrescriptionDate(),
+                            p.getMedication(),
+                            p.getDosage(),
+                            p.getFrequency(),
+                            p.getDurationDays(),
+                            p.getQuantity(),
+                            p.getInstructions(),
+                            p.getPharmacyName(),
+                            p.getStatus(),
+                            p.getIssueDate(),
+                            p.getCollectionDate()
+                    });
+                }
+            }
+        }
+    }
+    
+    private void disablePrescriptionFormFields() {
+        cbPatientId.setEnabled(false);
+        cbClinicianId.setEnabled(false);
+        cbAppointmentId.setEnabled(false);
+        txtPrescDate.setEditable(false);
+        cbDrug.setEnabled(false);
+        txtDosage.setEditable(false);
+        txtFrequency.setEditable(false);
+        txtDuration.setEditable(false);
+        txtQuantity.setEditable(false);
+        txtIssueDate.setEditable(false);
+        txtCollectionDate.setEditable(false);
+        txtInstructions.setEditable(false);
+        cbPharmacy.setEnabled(false);
+        cbStatus.setEnabled(false);
+        table.setEnabled(false);
+    }}

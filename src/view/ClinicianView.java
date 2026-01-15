@@ -21,10 +21,28 @@ public class ClinicianView extends JPanel {
     private JButton btnAdd, btnUpdate;
     public ClinicianView() {
         setLayout(new BorderLayout(15, 15));
-        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        
+        // Header panel
+        JPanel headerPanel = new JPanel();
+        headerPanel.setBackground(new Color(57, 105, 138));
+        headerPanel.setPreferredSize(new Dimension(800, 60));
+        headerPanel.setLayout(new BorderLayout());
+        
+        JLabel titleLabel = new JLabel("Clinicians");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        
+        headerPanel.add(titleLabel, BorderLayout.WEST);
+        add(headerPanel, BorderLayout.NORTH);
+        
+        JPanel contentPanel = new JPanel(new BorderLayout(15, 15));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
         model = new DefaultTableModel(
                 new Object[]{
-                        "ID","Title","First","Last","Speciality","GMC",
+                        "ID", "First","Last", "Title", "Speciality","GMC",
                         "Phone","Email","Workplace ID","Workplace Type",
                         "Employment","Start Date"
                 }, 0
@@ -62,8 +80,8 @@ public class ClinicianView extends JPanel {
             txtStartDate = new JFormattedTextField();
         }
         int row = 0;
-        add4(form, gc, row++, "Clinician ID:", lblId,    "Title:", cmbTitle);
-        add4(form, gc, row++, "First Name:", txtFirstName, "Last Name:", txtLastName);
+        add4(form, gc, row++, "Clinician ID:", lblId, "First Name:", txtFirstName);
+        add4(form, gc, row++, "Last Name:", txtLastName, "Title:", cmbTitle);
         add4(form, gc, row++, "Speciality:", txtSpeciality, "GMC:", txtGmc);
         add4(form, gc, row++, "Phone Number:", txtPhone, "Email:", txtEmail);
         add4(form, gc, row++, "Workplace ID:", txtWorkplaceId, "Workplace Type:", cmbWorkplaceType);
@@ -71,7 +89,8 @@ public class ClinicianView extends JPanel {
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, form, new JScrollPane(table));
         splitPane.setDividerLocation(0.55);
         splitPane.setResizeWeight(0.55);
-        add(splitPane, BorderLayout.CENTER);
+        contentPanel.add(splitPane, BorderLayout.CENTER);
+        add(contentPanel, BorderLayout.CENTER);
         form.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -137,7 +156,7 @@ public class ClinicianView extends JPanel {
         model.setRowCount(0);
         for (Clinician c : list) {
             model.addRow(new Object[]{
-                    c.getId(), c.getTitle(), c.getFirstName(), c.getLastName(),
+                    c.getId(), c.getFirstName(), c.getLastName(), c.getTitle(),
                     c.getSpeciality(), c.getGmcNumber(), c.getPhone(), c.getEmail(),
                     c.getWorkplaceId(), c.getWorkplaceType(),
                     c.getEmploymentStatus(), c.getStartDate()
@@ -151,9 +170,9 @@ public class ClinicianView extends JPanel {
         String startDate = txtStartDate.getText().trim();
         Clinician c = new Clinician(
                 lblId.getText(),
-                (String) cmbTitle.getSelectedItem(),
                 txtFirstName.getText(),
                 txtLastName.getText(),
+                (String) cmbTitle.getSelectedItem(),
                 txtSpeciality.getText(),
                 txtGmc.getText(),
                 txtPhone.getText(),
@@ -172,9 +191,9 @@ public class ClinicianView extends JPanel {
         String startDate = txtStartDate.getText().trim().isEmpty() ? "" : txtStartDate.getText().trim();
         Clinician c = new Clinician(
                 lblId.getText(),
-                (String) cmbTitle.getSelectedItem(),
                 txtFirstName.getText(),
                 txtLastName.getText(),
+                (String) cmbTitle.getSelectedItem(),
                 txtSpeciality.getText(),
                 txtGmc.getText(),
                 txtPhone.getText(),
@@ -243,9 +262,9 @@ public class ClinicianView extends JPanel {
             return;
         }
         lblId.setText(val(row, 0));
-        cmbTitle.setSelectedItem(val(row, 1));
-        txtFirstName.setText(val(row, 2));
-        txtLastName.setText(val(row, 3));
+        txtFirstName.setText(val(row, 1));
+        txtLastName.setText(val(row, 2));
+        cmbTitle.setSelectedItem(val(row, 3));
         txtSpeciality.setText(val(row, 4));
         txtGmc.setText(val(row, 5));
         txtPhone.setText(val(row, 6));

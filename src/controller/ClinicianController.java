@@ -15,6 +15,9 @@ public class ClinicianController {
 public ClinicianView getView() {
     return view;
 }
+    public ClinicianRepository getRepository() {
+        return repository;
+    }
     public String generateId() {
         return repository.generateNewId();
     }

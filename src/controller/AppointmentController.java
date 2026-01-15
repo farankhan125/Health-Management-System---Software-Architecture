@@ -34,6 +34,9 @@ public class AppointmentController {
     public String generateId() {
         return repo.generateNewId();
     }
+    public List<Appointment> getAllAppointments() {
+        return repo.getAll();
+    }
     public List<String> getPatientIds() {
         return patientRepo.getAllIds();
     }
