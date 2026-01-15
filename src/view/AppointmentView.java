@@ -6,7 +6,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.text.*;
 import java.text.ParseException;
 import java.awt.*;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 public class AppointmentView extends JPanel {
@@ -24,7 +23,6 @@ public class AppointmentView extends JPanel {
     private JComboBox<String> cbFacilityId;
     private JTextArea txtNotes;
     private JButton btnAdd, btnUpdate;
-    private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     public AppointmentView() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));

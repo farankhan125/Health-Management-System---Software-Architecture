@@ -44,7 +44,6 @@ public class ReferralManager {
     }
     /**
      * Writes a nicely formatted referral text file showing full details.
-     * This is what gets you marks under “output text file of referral content”.
      */
     private void writeReferralText(Referral r) {
         Patient patient = patientRepository.findById(r.getPatientId());

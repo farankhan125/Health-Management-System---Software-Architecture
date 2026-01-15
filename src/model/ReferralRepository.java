@@ -39,9 +39,7 @@ public class ReferralRepository {
     public List<Referral> getAll() {
         return referrals;
     }
-    /**
-     * Add referral and append to CSV (ALL 16 COLUMNS)
-     */
+
     public void addAndAppend(Referral r) {
         referrals.add(r);
         try {

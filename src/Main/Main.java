@@ -35,7 +35,7 @@ public class Main {
                 ReferralView rv = new ReferralView();
                 
                 // Initialize controllers
-                PatientController pc = new PatientController(pr, pv);
+                PatientController pc = new PatientController(pr, fr, pv);
                 ClinicianController cc = new ClinicianController(cr, cv);
                 AppointmentController ac = new AppointmentController(
                         ar,

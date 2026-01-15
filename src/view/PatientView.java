@@ -1,6 +1,7 @@
 package view;
 import controller.PatientController;
 import model.Patient;
+import model.FacilityRepository;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.*;
@@ -19,7 +20,7 @@ public class PatientView extends JPanel {
     private JTextField txtPhone, txtEmail;
     private JTextField txtAddress, txtPostcode;
     private JTextField txtEmergencyName, txtEmergencyPhone;
-    private JTextField txtGpSurgery;
+    private JComboBox<String> cbGpSurgery;
     private JButton btnAdd, btnUpdate, btnDelete;
     public PatientView() {
         setLayout(new BorderLayout(15, 15));
@@ -88,7 +89,7 @@ public class PatientView extends JPanel {
         txtEmergencyName = new JTextField();
         txtEmergencyPhone = new JTextField();
         ((AbstractDocument) txtEmergencyPhone.getDocument()).setDocumentFilter(new DigitsOnlyFilter());
-        txtGpSurgery = new JTextField();
+        cbGpSurgery = new JComboBox<>();
         int row = 0;
         add4(form, gc, row++, "Patient ID:", lblAutoId, "First Name:", txtFirstName);
         add4(form, gc, row++, "Last Name:", txtLastName, "DOB (YYYY-MM-DD):", txtDob);
@@ -98,7 +99,7 @@ public class PatientView extends JPanel {
         add4(form, gc, row++, "Emergency Name:", txtEmergencyName,
                 "Emergency Phone:", txtEmergencyPhone);
         add4(form, gc, row++, "Registration Date (YYYY-MM-DD):", txtRegistrationDate,
-                "GP Surgery ID:", txtGpSurgery);
+                "GP Surgery ID:", cbGpSurgery);
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, form, new JScrollPane(table));
         splitPane.setDividerLocation(0.55);
         splitPane.setResizeWeight(0.55);
@@ -161,6 +162,13 @@ public class PatientView extends JPanel {
     public void setController(PatientController controller) {
         this.controller = controller;
     }
+    
+    public void setFacilityRepository(FacilityRepository facilityRepository) {
+        cbGpSurgery.removeAllItems();
+        for (model.Facility f : facilityRepository.getAll()) {
+            cbGpSurgery.addItem(f.getId());
+        }
+    }
     public void showPatients(List<Patient> list) {
         tableModel.setRowCount(0);
         updateAutoId(list);
@@ -200,7 +208,7 @@ public class PatientView extends JPanel {
                 txtEmergencyName.getText(),
                 txtEmergencyPhone.getText(),
                 txtRegistrationDate.getText(),
-                txtGpSurgery.getText()
+                (String) cbGpSurgery.getSelectedItem()
         );
         controller.addPatient(p);
         JOptionPane.showMessageDialog(this,
@@ -223,7 +231,7 @@ public class PatientView extends JPanel {
                 txtEmergencyName.getText(),
                 txtEmergencyPhone.getText(),
                 txtRegistrationDate.getText(),
-                txtGpSurgery.getText()
+                (String) cbGpSurgery.getSelectedItem()
         );
         controller.updatePatient(p);
         JOptionPane.showMessageDialog(this,
@@ -262,7 +270,7 @@ public class PatientView extends JPanel {
         txtEmergencyName.setText(val(row, 10));
         txtEmergencyPhone.setText(val(row, 11));
         txtRegistrationDate.setText(val(row, 12));
-        txtGpSurgery.setText(val(row, 13));
+        cbGpSurgery.setSelectedItem(val(row, 13));
     }
     private void clearForm() {
         updateNextId();
@@ -278,7 +286,7 @@ public class PatientView extends JPanel {
         txtEmergencyName.setText("");
         txtEmergencyPhone.setText("");
         txtRegistrationDate.setText("");
-        txtGpSurgery.setText("");
+        cbGpSurgery.setSelectedIndex(0);
     }
     private void updateNextId() {
         String nextId = "P001";
@@ -334,7 +342,7 @@ public class PatientView extends JPanel {
                 txtEmergencyName.setText(p.getEmergencyContactName());
                 txtEmergencyPhone.setText(p.getEmergencyContactPhone());
                 txtRegistrationDate.setText(p.getRegistrationDate());
-                txtGpSurgery.setText(p.getGpSurgeryId());
+                cbGpSurgery.setSelectedItem(p.getGpSurgeryId());
             }
         }
     }
@@ -352,7 +360,7 @@ public class PatientView extends JPanel {
         txtEmergencyName.setEditable(false);
         txtEmergencyPhone.setEditable(false);
         txtRegistrationDate.setEditable(false);
-        txtGpSurgery.setEditable(false);
+        cbGpSurgery.setEnabled(false);
         table.setEnabled(false);
     }
     

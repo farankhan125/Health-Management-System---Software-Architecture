@@ -1,15 +1,17 @@
 package controller;
 import model.Patient;
 import model.PatientRepository;
+import model.FacilityRepository;
 import view.PatientView;
 import java.util.List;
 public class PatientController {
     private final PatientRepository repository;
     private final PatientView view;
-    public PatientController(PatientRepository repository, PatientView view) {
+    public PatientController(PatientRepository repository, FacilityRepository facilityRepository, PatientView view) {
         this.repository = repository;
         this.view = view;
         this.view.setController(this);
+        this.view.setFacilityRepository(facilityRepository);
         refreshView();
     }
     public PatientView getView() {

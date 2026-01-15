@@ -29,16 +29,9 @@ public class ClinicianPortalFrame extends JFrame {
         
         JTabbedPane tabs = new JTabbedPane();
         
-        // Add Patients tab (full access)
-        tabs.addTab("Patients", pc.getView());
-        
-        // Add Appointments tab (full access)
+        tabs.addTab("Patients", pc.getView());       
         tabs.addTab("Appointments", ac.getView());
-        
-        // Add Prescriptions tab (full access)
         tabs.addTab("Prescriptions", prc.getView());
-        
-        // Add Referrals tab (full access)
         tabs.addTab("Referrals", rc.getView());
         
         JPanel mainPanel = new JPanel(new java.awt.BorderLayout());

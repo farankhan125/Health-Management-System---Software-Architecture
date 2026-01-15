@@ -1,7 +1,6 @@
 package controller;
 import model.*;
 import view.*;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 public class AppointmentController {
@@ -10,7 +9,6 @@ public class AppointmentController {
     private final ClinicianRepository clinicianRepo;
     private final FacilityRepository facilityRepo;
     private final AppointmentView view;
-    private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     public AppointmentController(AppointmentRepository repo,
                                  PatientRepository patientRepo,
                                  ClinicianRepository clinicianRepo,

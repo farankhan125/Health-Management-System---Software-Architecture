@@ -2,7 +2,6 @@ package controller;
 import model.Clinician;
 import model.ClinicianRepository;
 import view.ClinicianView;
-import java.util.List;
 public class ClinicianController {
     public final ClinicianRepository repository;
     private final ClinicianView view;

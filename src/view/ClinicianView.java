@@ -7,7 +7,6 @@ import javax.swing.text.*;
 import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 public class ClinicianView extends JPanel {
     private ClinicianController controller;
@@ -170,9 +169,9 @@ public class ClinicianView extends JPanel {
         String startDate = txtStartDate.getText().trim();
         Clinician c = new Clinician(
                 lblId.getText(),
+                (String) cmbTitle.getSelectedItem(),
                 txtFirstName.getText(),
                 txtLastName.getText(),
-                (String) cmbTitle.getSelectedItem(),
                 txtSpeciality.getText(),
                 txtGmc.getText(),
                 txtPhone.getText(),
@@ -191,9 +190,9 @@ public class ClinicianView extends JPanel {
         String startDate = txtStartDate.getText().trim().isEmpty() ? "" : txtStartDate.getText().trim();
         Clinician c = new Clinician(
                 lblId.getText(),
+                (String) cmbTitle.getSelectedItem(),
                 txtFirstName.getText(),
                 txtLastName.getText(),
-                (String) cmbTitle.getSelectedItem(),
                 txtSpeciality.getText(),
                 txtGmc.getText(),
                 txtPhone.getText(),

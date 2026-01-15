@@ -192,14 +192,6 @@ public class ReferralView extends JPanel {
         cb.setFont(new Font("SansSerif", Font.PLAIN, 12));
         return cb;
     }
-    private JPanel labeled(String label, Component field) {
-        JPanel p = new JPanel(new BorderLayout(3, 2));
-        JLabel lbl = new JLabel(label);
-        lbl.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        p.add(lbl, BorderLayout.NORTH);
-        p.add(field, BorderLayout.CENTER);
-        return p;
-    }
     private void add4(JPanel panel, GridBagConstraints gc, int row,
                       String label1, JComponent field1,
                       String label2, JComponent field2) {

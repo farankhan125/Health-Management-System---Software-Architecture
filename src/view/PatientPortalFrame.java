@@ -5,8 +5,6 @@ import model.Patient;
 import javax.swing.*;
 
 public class PatientPortalFrame extends JFrame {
-    private Patient loggedInPatient;
-    
     public PatientPortalFrame(
             Patient patient,
             PatientController pc,
@@ -14,7 +12,6 @@ public class PatientPortalFrame extends JFrame {
             PrescriptionController prc,
             ReferralController rc) {
         super("Patient Portal - " + patient.getFirstName() + " " + patient.getLastName());
-        this.loggedInPatient = patient;
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         

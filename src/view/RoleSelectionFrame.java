@@ -1,6 +1,5 @@
 package view;
 
-import controller.*;
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,7 +12,6 @@ public class RoleSelectionFrame extends JFrame {
         setSize(900, 600);
         setLocationRelativeTo(null);
         
-        // Main panel with gradient-like background
         JPanel mainPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -50,7 +48,7 @@ public class RoleSelectionFrame extends JFrame {
         headerPanel.add(textPanel, BorderLayout.CENTER);
         mainPanel.add(headerPanel, BorderLayout.NORTH);
         
-        // Button panel - centered
+        // Button 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(new Color(245, 247, 250));
         buttonPanel.setLayout(new GridLayout(1, 3, 30, 0));
@@ -125,7 +123,6 @@ public class RoleSelectionFrame extends JFrame {
         button.setFocusPainted(false);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
-        // Create text panel
         JPanel textPanel = new JPanel(new GridLayout(2, 1, 5, 5));
         textPanel.setOpaque(false);
         textPanel.setBorder(BorderFactory.createEmptyBorder(30, 15, 30, 15));

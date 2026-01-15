@@ -6,7 +6,6 @@ import java.awt.*;
 public class UiTheme {
 
     public static void apply() {
-        // default palette
         Color defaultBg = new Color(245, 247, 250);
         Color defaultAccent = new Color(57, 105, 138);
         Color defaultSoft = new Color(230, 240, 250);
@@ -14,7 +13,6 @@ public class UiTheme {
     }
 
     public static void apply(Color accent, Color soft, Color bgPanel) {
-        // Try to use FlatLaf if available on classpath for a modern look
         boolean flatlafAvailable = false;
         try {
             Class<?> flat = Class.forName("com.formdev.flatlaf.FlatLightLaf");
@@ -22,7 +20,6 @@ public class UiTheme {
             install.invoke(null);
             flatlafAvailable = true;
         } catch (ClassNotFoundException ex) {
-            // FlatLaf not on classpath — fall back to Nimbus
             try {
                 for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                     if ("Nimbus".equals(info.getName())) {
@@ -32,7 +29,6 @@ public class UiTheme {
                 }
             } catch (Exception ignore) {}
         } catch (Exception ignore) {
-            // any reflection/invoke error — fall back to Nimbus
             try {
                 for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                     if ("Nimbus".equals(info.getName())) {
@@ -73,7 +69,6 @@ public class UiTheme {
         UIManager.put("ScrollBar.thumb", accent);
 
         if (flatlafAvailable) {
-            // Tweak some FlatLaf-specific properties for rounded controls
             UIManager.put("Component.arc", 8);
             UIManager.put("Button.arc", 8);
             UIManager.put("Component.focusWidth", 2);
